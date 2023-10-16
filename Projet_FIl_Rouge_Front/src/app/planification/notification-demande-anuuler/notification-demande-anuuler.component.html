@@ -1,0 +1,66 @@
+<div  class="d-flex flex-column sticky-top container-fluid shadow bg-white mb-3">
+    <app-navbar class=""></app-navbar>
+</div>
+<section class="mt-3" >
+    <div class="container">
+        <div class="row">
+            <div class="card">
+                <div class="card-header bg-secondary text-white align-item-center">
+                    <marquee class="h4">les Demandes d'annulation de session
+                        <span class="fw-bold"></span>
+                    </marquee>
+                </div>
+                <div class="card-body bg-ligth">
+                    <div class="card shadow">
+                        <div class="d-flex flex-wrap ">
+                          <div class="card-body"*ngFor="let cour of data" >
+                            <div class="card carde shadow bg-secondary text-white mb-3 my-3 d-flex justify-content-center align-item-center border border-2" style="width: 18rem;">
+                              <div class="card-body">
+                                  <p class="card-text d-flex justify-content-center align-item-center">Professeur: {{cour.cours.module_user.user.prenom+" "+cour.cours.module_user.user.nom}}</p>
+                                  <h3 class="card-title d-flex justify-content-center align-item-center">module: {{cour.cours.module_user.module.libelle}}</h3>
+                                <p class="d-flex justify-content-center align-item-center">Referentiel: {{cour.cours.annee_scolaire_classe.classe.filiere.libelle}}</p>
+                                <p class="d-flex justify-content-center align-item-center">Date : {{cour.date}}</p>
+                                <p class="d-flex justify-content-center align-item-center">heure de debut: {{cour.heure_debut}}</p>
+                                <p class="d-flex justify-content-center align-item-center">heure de fin: {{cour.heure_fin}}</p>
+                                <p></p>
+                              </div>
+                              <div class="d-flex justify-content-center">
+                                    <button  class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#MotifModal" (click)="voirMotif(cour)" >voir Motif</button>
+                              </div>
+                              <div class="mt-1"></div>
+                            </div>   
+                          </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                   
+                    <!-- <marquee class="h4">les Demandes d'annulation de session
+                        <span class="fw-bold"></span>
+                    </marquee> -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+  </section>
+  <!-- Modal -->
+  <div class="modal fade" id="MotifModal" tabindex="-1" role="dialog" aria-labelledby="MotifModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="MotifModalLabel">Motif d'absence</h5>
+          <button type="button" class="close" data-dismiss="MotifModal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>{{motif}}</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" (click)="annulerDemande()" class="btn btn-danger" data-dismiss="modal">Annuler</button>
+          <button type="button" (click)="demandeAccepter()" class="btn btn-primary" data-dismiss="modal">Accepter</button>
+        </div>
+      </div>
+    </div>
+  </div>

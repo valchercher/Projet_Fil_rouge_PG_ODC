@@ -1,0 +1,31 @@
+.cal{
+    margin-top: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content:space-around;
+    box-shadow: 0 4px 8px rgb(red, green, blue,0.2);
+}
+ button{
+    margin-left: 5px;
+}
+
+.cal-hour-segment {
+    display: none !important;
+  }
+
+.custom-event-text{
+    color: white;
+}
+
+
+
+      h5,h6 {
+        margin: 0 0 10px;
+      }
+
+      pre {
+        background-color: #f5f5f5;
+        padding: 15px;
+      }
+    
+  

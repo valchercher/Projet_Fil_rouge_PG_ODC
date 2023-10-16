@@ -1,0 +1,151 @@
+<div class="d-flex flex-column sticky-top container-fluid shadow mb-3 bg-white">
+ <div>
+  <app-navbar ></app-navbar>
+ </div>
+ <div class="">
+  <div *ngIf="role==='RP'" class="container mt-3 card-header d-flex justify-content-between bg-white" >
+    <div class="d-flex">
+      <div class="d-flex justify-content-center align-item-center">
+        <input type="button" readonly disabled class="bg-primary justify-content-center text-white border-none" name="" id="" value="rechercher par">
+      </div>
+     <div class="me-2">
+        <select name="" (change)="onSelectedOption($event)"  class="form-control ml-5" id="">
+          <option value="">selectionner un element</option>
+          <option value="module">module</option>
+          <option value="professeur">professeur</option>
+          <option value="classe">classe</option>
+          <option value="heure">date</option>
+          <option value="etat">etat</option>
+          <option value="salle">salle</option>
+        </select>
+     </div>
+    </div>
+    
+    <div class="d-flex text-black">
+      <select name="" id="" (change)="OnchoiceOpt($event)"  class="form-control">
+        <option value="">selectionner un element</option>
+        <option value="{{mod}}" *ngFor="let mod of getUnifiedArray() " >{{getTypeLabel(mod,cle)}}</option>
+      </select>
+      &nbsp;
+      <button  (click)="onSearch()" class="btn btn-outline-success" type="button">Search</button>
+    </div>
+  </div>
+  <div *ngIf="role=='professeur'" class=" d-flex justify-content-center mt-3">
+    <input type="search" class="form-control col-md-6">
+    &nbsp;
+    <button  class="btn btn-outline-success" type="button">Search</button>
+  </div>
+ </div>
+ <hr class="border-2">
+  <div class="mt-5 ">
+    <div id="cal-buttons" class="d-flex flex-row  justify-content-around" >
+      <div id="cal-date-nav-buttons boutton" >
+        <button id="previous" type="button" class="btn btn-primary"
+         mwlCalendarPreviousView
+         [(viewDate)]="viewDate"
+          [view]="view"
+          [excludeDays]="[0,6]"
+         >Precedent
+        </button>
+        <button id="today" type="button" class="btn btn-success"
+         mwlCalendarToday
+          [(viewDate)]="viewDate" 
+          >Aujourd'hui</button>
+        <button id="next" type="button" class="btn btn-danger"
+         mwlCalendarNextView
+          [(viewDate)]="viewDate"
+          [view]="view"
+          [excludeDays]="[0,6]" 
+          >suivant</button>
+      </div>
+      <div id="cal-data-field " class="fs-5">{{viewDate |calendarDate:(view +'ViewTitle'):'fr'}}</div>
+      <div id="cal-view-nav-buttons">
+        <button id="month" type="button" class="btn btn-danger"
+         (click)="setView(CalendarView.Month)"
+         >Mois
+        </button>
+        <button id="week" type="button" class="btn btn-success" 
+          (click)="setView(CalendarView.Week)"
+          >Semaine
+        </button>
+        <button id="day" type="button" class="btn btn-primary" 
+          (click)="setView(CalendarView.Day)"
+          >Jour
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="mt-2">
+
+  </div>
+</div>
+
+  <div id="calendar-container fix ">
+   <div class="mt-3 ml-3 mr-3">
+      <span [ngSwitch]="view" >
+        <mwl-calendar-month-view 
+        *ngSwitchCase="CalendarView.Month"
+          [viewDate]="viewDate"
+           [events]="events"
+          [activeDayIsOpen]="activeDayIsOpen"
+          (dayClicked)="dayClicked($event.day)"
+          [locale]="locale"   
+          [excludeDays]="[0,6]"  
+          (eventClicked)="eventClicked($event)" 
+          (eventTimesChanged)="eventTimesChanged($event)"
+          [refresh]="refresh" 
+          [ngStyle]="{'color':red}"
+         >
+        </mwl-calendar-month-view>
+        <mwl-calendar-week-view 
+         *ngSwitchCase="CalendarView.Week"
+          [viewDate]="viewDate"
+          [events]="events"
+           [locale]="locale"  
+           [excludeDays]="[0,6]"  
+           [dayStartHour]="8"
+           [dayEndHour]="21" 
+           (eventClicked)="eventClicked($event)" 
+           (eventTimesChanged)="eventTimesChanged($event)"  
+           [refresh]="refresh"
+           [ngStyle]="{'color':green}"
+           >
+           <!-- <mwl-calendar-event-actions>
+              <span class="cal-event-actions ng-star-inserted">
+                <a href="javascript:;" tabindex="0" role="button" class="cal-event-action ng-star-inserted" aria-label="Edit">
+                  <i class="fas fa-fw fa-pencil-alt"></i>
+                </a>
+                <a href="javascript:;" tabindex="0" role="button" class="cal-event-action ng-star-inserted" aria-label="Delete">
+                    <i class="fas fa-fw fa-trash-alt"></i>
+                </a>
+              </span>
+          </mwl-calendar-event-actions> -->
+          
+          </mwl-calendar-week-view>
+        <mwl-calendar-day-view 
+        *ngSwitchCase="CalendarView.Day"
+         [viewDate]="viewDate"
+          [events]="events"
+          [locale]="locale"  
+          (eventClicked)="eventClicked($event)" 
+          (eventTimesChanged)="eventTimesChanged($event)" 
+          [refresh]="refresh"
+          [ngStyle]="{'color':blue}"
+           [dayStartHour]="8"
+           [dayEndHour]="21" 
+          >
+        </mwl-calendar-day-view>      
+      </span>
+   </div>
+  </div>
+<!-- modal -->
+
+
+<!-- Modal -->
+
+<!-- <div   class="modal fade" id="sessionModal" #form tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" > -->
+  <ng-template #sessionModal let-data="data">
+ 
+  </ng-template>
+<!-- </div> -->
+

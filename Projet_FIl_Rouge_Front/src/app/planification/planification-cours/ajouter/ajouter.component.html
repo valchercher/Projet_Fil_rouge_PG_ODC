@@ -1,0 +1,304 @@
+<div  class="d-flex flex-column sticky-top container-fluid shadow bg-white mb-3">
+  <app-navbar class=""></app-navbar>
+  <div *ngIf="role==='RP'" class="container mt-3 card-header d-flex justify-content-between bg-white" >
+    <div class="d-flex">
+      <div class="d-flex justify-content-center align-item-center">
+        <input type="button" readonly disabled class="bg-primary justify-content-center text-white border-none" name="" id="" value="rechercher par">
+      </div>
+     <div class="me-2">
+        <select name="" (change)="onSelectedOption($event)"  class="form-control ml-5" id="">
+          <option value="">selectionner un element</option>
+          <option value="module">module</option>
+          <option value="professeur">professeur</option>
+          <option value="classe">classe</option>
+          <option value="heure">heure</option>
+          <option value="etat">etat</option>
+        </select>
+     </div>
+    </div>
+    <div class="d-flex" >
+      <select name="" id=""  *ngIf="getUnifiedArray()" (change)="OnchoiceOpt($event)"  class="form-control">
+        <option value="">selectionner un element</option>
+        <option value="{{mod}}" *ngFor="let mod of getUnifiedArray() ">{{getTypeLabel(mod,cle)}}</option>
+      </select>
+      &nbsp;
+      <button (click)="onSearch()" class="btn btn-outline-success" type="button">Search</button>
+    </div>
+    <div class="ml-5">
+      <button class=" btn btn-success" data-bs-toggle="modal" data-bs-target="#coursModal">Ajouter</button>
+    </div>
+  </div>
+  <div *ngIf="role=='professeur'"  class=" d-flex justify-content-center mt-3">
+    <input type="search" [(ngModel)]="searchProfeseur" class="form-control col-md-6">
+    &nbsp;
+    <button  class="btn btn-outline-success" (click)="onSearchProfesseur()" type="button">Search</button>
+  </div>
+  <div class="mt-3"></div>
+</div>
+<div class="container">
+
+  <div class="bg-gradient bg-success text-white ">
+    <div class="h-75">
+      <h1 class="d-flex justify-content-center"> {{message}}</h1>
+    </div>
+  </div>
+  <div class="card shadow">
+    <div class="d-flex flex-wrap ">
+      <div class="card-body"*ngFor="let cour of cours|filtre:recherche:'libelle'" >
+        <div class="card carde shadow mb-3 my-3 d-flex justify-content-center align-item-center border border-2" style="width: 18rem;">
+          <div class="d-flex justify-content-end mt-1 mr-1" >
+            <button disabled class="text-danger">{{cour.etat === 0 ? 'En cours': 'Terminer' }}</button>
+          </div>
+          <div class="card-body">
+            <h3 class="card-title d-flex justify-content-center align-item-center"> {{cour.module_user.module.libelle}}</h3>
+            <p class="card-text d-flex justify-content-center align-item-center">Professeur {{cour.module_user.user.prenom+" "+cour.module_user.user.nom}}</p>
+            <p class="d-flex justify-content-center align-item-center">{{cour.nb_heure_global}} h</p>
+            <p class="d-flex justify-content-center align-item-center">{{cour?.ecouler}} h</p>
+            <p class="d-flex justify-content-center align-item-center">{{cour.annee_scolaire_classe.classe.filiere.libelle}}</p>
+            <p></p>
+            <div class="d-flex justify-content-end" *ngIf="role=='RP'">
+              <button href="" [disabled]="cour.etat===1" (click)="onchangeSession(cour)" class="btn btn-success mr-3" data-bs-toggle="modal" data-bs-target="#sessionModal"
+                >session
+                <!-- <label class="text-danger">(1)</label> -->
+              </button>
+              &nbsp;
+              <button href="" [disabled]="cour.etat===1" class="btn btn-primary mr-2">editer</button>
+              &nbsp;
+              <button href="" [disabled]="cour.etat===1" class="btn btn-danger ">delete</button>
+            </div>
+          </div>
+        </div>   
+      </div>
+    </div>
+  </div>
+  <div class="d-flex mt-5 justify-content-end ">
+    <mat-paginator
+    class="border-2 border shadow mb-3 fs-24"
+    [length]="total"
+    [pageIndex]="page-1"
+    [pageSizeOptions]="[4,16,24,34,40,50]"
+    [pageSize]="page_current"
+    (page)="onChangePage($event)"
+    ></mat-paginator>
+  </div>
+</div>
+
+<!-- Modal ajouter Cours -->
+<div class="modal fade" id="coursModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <form action="" [formGroup]="ajouterCours" (ngSubmit)="onSubmit()">
+        <div class="modal-header bg-primary">
+          <h5 class="modal-title text-white" id="exampleModalLabel" >Ajouter un cours</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">       
+          <div class="container-fluid modal-item">
+            <div class="container col-md-6">          
+              <h1 class="fw-bold">Contenu du cours</h1>
+              <div class="card">
+               
+              </div>
+            </div>
+          </div>       
+        </div>
+        <div class="modal-footer">
+          <div class="d-flex col-md-12 justify-content-between">
+            <div class="col-md-12 ">
+                <label for="" class="d-flex justify-content-center align-item-center"><strong>Module</strong></label>
+                <select name="" formControlName="module_id" (change)="onSelectedModule()"  class="form-select" id=""
+                  [ngClass]="{'is-valid':ajouterCours.get('module_id')?.valid && (ajouterCours.get('module_id')?.touched ||ajouterCours.get('module_id')?.dirty ),
+                  'is-invalid':ajouterCours.get('module_id')?.invalid && (ajouterCours.get('module_id')?.touched ||ajouterCours.get('module_id')?.dirty )
+                }"
+                > 
+                <option value="">selectionner un module</option>
+                  <option [ngValue]="module" *ngFor="let module of modules">{{module.libelle}}</option>
+                </select>
+                <!-- <div *ngIf="ajouterCours.get('module_id')?.hasError('required')">
+                  Le module doit être requis.
+                </div> -->
+                
+                <div class=" ">
+                  <label for="" class="d-flex justify-content-center align-item-center"><strong>Professeur</strong></label>
+                  <select name="" class="form-select" formControlName="professeur_id" id=""               
+                    [ngClass]="{'is-valid':ajouterCours.get('professeur_id')?.valid && (ajouterCours.get('professeur_id')?.touched ||ajouterCours.get('professeur_id')?.dirty ),
+                    'is-invalid':ajouterCours.get('professeur_id')?.invalid && (ajouterCours.get('professeur_id')?.touched ||ajouterCours.get('professeur_id')?.dirty )
+                  }"
+                  >
+                  <option value="">selectionner un professeur</option>
+                    <option [ngValue]="prof" *ngFor="let prof of professeurs">{{prof.prenom+" "+prof.nom}}</option>
+                  </select>
+                </div>
+            </div>
+          </div>
+          <div class="d-flex col-md-12 justify-content-between mt-3">
+            <div class="col-md-12 ">
+                <label for="" class="d-flex justify-content-center align-item-center"><strong>Nombre d'heure global</strong></label>
+                <input type="number" class="form-control " formControlName="nb_heure_global" name="" id=""
+                  [ngClass]="{'is-valid':ajouterCours.get('nb_heure_global')?.valid && (ajouterCours.get('nb_heure_global')?.touched ||ajouterCours.get('nb_heure_global')?.dirty ),
+                  'is-invalid':ajouterCours.get('nb_heure_global')?.invalid && (ajouterCours.get('nb_heure_global')?.touched ||ajouterCours.get('nb_heure_global')?.dirty )
+                }"
+                >
+                <div *ngIf="ajouterCours.get('nb_heure_global')?.hasError('min') ||ajouterCours.get('nb_heure_global')?.hasError('max')" class="text-danger mt-1">
+                  le nombre d'heure global compris entre 15h et 50h
+                </div>
+                <div class=" mt-3">
+                  <label for="" class="d-flex justify-content-center align-item-center"><strong>Classe</strong></label>
+                  <select name="" (change)="validerExiste()" class="form-select" formControlName="classe_id" id=""
+                    [ngClass]="{'is-valid':ajouterCours.get('classe_id')?.valid && (ajouterCours.get('classe_id')?.touched ||ajouterCours.get('classe_id')?.dirty ),
+                    'is-invalid':ajouterCours.get('classe_id')?.invalid && (ajouterCours.get('classe_id')?.touched ||ajouterCours.get('classe_id')?.dirty )
+                  }"
+                  >
+                    <option [ngValue]="classe" *ngFor="let classe of classes">{{classe.libelle}}</option>
+                  </select>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="coursExiste.length > 0" class="text-danger d-flex justify-content-center">
+          Ce cours existe dèja
+        </div>
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Annuler</button>
+          <button type="submit" [disabled]="ajouterCours.invalid || coursExiste.length >0" data-bs-dismiss="modal" aria-label="Close" class="btn btn-success">Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<!--Modal session -->
+
+<div  class="modal fade" id="sessionModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content container">
+      <form action=""  [formGroup]="ajoutSession" (ngSubmit)="AddSubmit()" >
+        <div class="modal-header bg-primary col-md-12 d-flex justify-content-center align-item-center shadow">
+          <div class=" ml-5">
+            <h1 class="modal-title text-white" id="exampleModalLabel  ml-5" >Ajouter une session</h1>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">       
+          <div class="container-fluid ">
+            <div class="">          
+              <div class=" d-flex  justify-content-around">
+                <div><strong>Professeur :</strong></div>
+                <div >{{coursSession?.module_user?.user?.prenom+" "+coursSession?.module_user?.user?.nom}}</div>
+              </div>
+             <div class="d-flex justify-content-around mt-3">
+              <div for=""><strong>Classe :</strong></div>
+              <div>
+                <select name="" formControlName="classe_id" (change)="onChargeModule($event)" class="form-select" id=""
+                [ngClass]="{'is-valid':ajoutSession.get('classe_id')?.valid && (ajoutSession.get('classe_id')?.touched ||ajoutSession.get('classe_id')?.dirty ),
+                'is-invalid':ajoutSession.get('classe_id')?.invalid && (ajoutSession.get('classe_id')?.touched ||ajoutSession.get('classe_id')?.dirty )
+              }"
+                >
+                  <option [ngValue]="clas.annee_scolaire_classe"  *ngFor="let clas of classeSesion">{{clas.annee_scolaire_classe.classe.libelle}}</option>
+                </select>
+              </div>
+             </div>
+             <div class=" d-flex justify-content-around mt-3">
+              <div><strong>Module :</strong></div>
+              <div >{{classess?.module_user?.module?.libelle}}</div>
+             </div>
+              <div class="d-flex justify-content-around mt-3">
+                <div class="mt-2"><strong>Nombre d'heure global :</strong> </div>
+              <div> {{classess?.nb_heure_global }} H</div>
+              </div>
+              <!-- <div class="card">        
+              </div> -->
+            </div>
+          </div>       
+        </div>
+        <div class="modal-footer">
+          <div class="d-flex col-md-12 justify-content-between">
+            <div class="col-md-12 d-flex justify-content-center flex-column">
+             
+              <div class="col-md-12 mt-3 ">
+                <label for="" class="d-flex justify-content-center" ><strong>Date:</strong></label>
+                <input formControlName="date" type="date" class="form-control"
+                [ngClass]="{'is-valid':ajoutSession.get('date')?.valid && (ajoutSession.get('date')?.touched ||ajoutSession.get('date')?.dirty ),
+                'is-invalid':ajoutSession.get('date')?.invalid && (ajoutSession.get('date')?.touched ||ajoutSession.get('date')?.dirty )
+              }"
+                >
+                <div class="text-danger">{{ajoutSession.get('date')?.getError('error')}}</div>
+              </div>
+              <div class="col-md-12 mt-3 ">
+                <label for="" class="d-flex justify-content-center"><strong>Heure debut:</strong></label>
+                <input formControlName="heure_debut"  type="time" class="form-control" name="" id="" min="08:00" max="21:00"
+                [ngClass]="{'is-valid':ajoutSession.get('heure_debut')?.valid && (ajoutSession.get('heure_debut')?.touched ||ajoutSession.get('heure_debut')?.dirty ),
+                'is-invalid':ajoutSession.get('heure_debut')?.invalid && (ajoutSession.get('heure_debut')?.touched ||ajoutSession.get('heure_debut')?.dirty )
+                }"
+                >
+                <div >
+                  <div class="text-danger">{{ajoutSession.get('heure_debut')?.getError('error')}}</div>
+                </div>
+                
+              </div>
+              <div class="col-md-12 mt-3 ">
+                <label for="appt-time" class="d-flex justify-content-center"><strong>Heure de fin:</strong></label>
+                <input formControlName="heure_fin" type="time" name="appt-time" class="form-control" id="appt-time" min="9:00" max="16:00"
+                [ngClass]="{'is-valid':ajoutSession.get('heure_fin')?.valid && (ajoutSession.get('heure_fin')?.touched ||ajoutSession.get('heure_fin')?.dirty ),
+                'is-invalid':ajoutSession.get('heure_fin')?.invalid && (ajoutSession.get('heure_fin')?.touched ||ajoutSession.get('heure_fin')?.dirty )
+              }"
+                >
+                <div >
+                  <div class="text-danger">{{ajoutSession.get('heure_fin')?.getError('error')}}</div>
+                </div>
+              </div>
+              <label for="" class="d-flex justify-content-center mt-2"><strong>Salle:</strong></label>
+              <div class="col-md-12 mt-3 d-flex flex-row justify-content-around">
+                <div class="d-flex ">
+                  <label for="Presentiel" class="text-size " >Presentiel</label>
+                  &nbsp;
+                  <input type="radio"  (click)="toogleRadio($event)" value="presentiel" class="mb-1 form-check-input" name="status"  id="Presentiel">
+                </div>
+                <div class="d-flex  ml-3 fs-24 align-item-center">
+                  <label for="ligne" class="text-size">En ligne</label>
+                  &nbsp;
+                  <input type="radio" (click)="toogleRadio($event)" value="ligne" class="mb-1 form-check-input" name="status" id="ligne">
+                </div>
+              </div>
+              <div *ngIf="presence==='presentiel'" class="mt-2">
+                  <select formControlName="salle_id" name="" id="" class="form-select"
+                 
+                  >
+                    <option [ngValue]="salle" *ngFor="let salle of capaciteSalles">{{salle.nom}}</option>
+                  </select>
+                  <div *ngIf="classeSesion.length>0 && capaciteSalles.length<=0" class="text-danger">
+                      auncune salle ne peut contenir cette classe
+                  </div>
+              </div>
+              <div class="d-flex justify-content-around mt-3">
+                <div class="d-flex ">
+                    <label for="Background" class="text-size mt-2">Background:</label>
+                    &nbsp;
+                    <input type="color"  formControlName="background" class="form-control form-control-color mb-2" title="choisir une couleur pour votre background" id="Background" value="#563d7c"
+                    [ngClass]="{'is-valid':ajoutSession.get('background')?.valid && (ajoutSession.get('background')?.touched ||ajoutSession.get('background')?.dirty ),
+                    'is-invalid':ajoutSession.get('background')?.invalid && (ajoutSession.get('background')?.touched ||ajoutSession.get('background')?.dirty )
+                  }"
+                    >
+                </div>
+                <div class="d-flex ">
+                    <label for="Color" class="text-size mt-2 ">Color:</label>
+                    &nbsp;
+                    <input type="color" formControlName="color" class="form-control form-control-color mb-2 " title="choisir une couleur pour votre text" id="Color" value="#508d1a"
+                    [ngClass]="{'is-valid':ajoutSession.get('color')?.valid && (ajoutSession.get('color')?.touched ||ajoutSession.get('color')?.dirty ),
+                    'is-invalid':ajoutSession.get('color')?.invalid && (ajoutSession.get('color')?.touched ||ajoutSession.get('color')?.dirty )
+                  }"
+                    >
+                </div>
+              </div>
+            </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-end mt-3">
+          <button class="btn btn-danger" data-bs-dismiss="modal">Annuler</button>
+          &nbsp;
+          <button type="submit" [disabled]="ajoutSession.invalid" class="btn btn-success mr-2" data-bs-dismiss="modal">Enregistrer</button>
+        </div>
+        <div class="mt-3"></div>
+        </form>
+    </div>
+  </div>
+</div>

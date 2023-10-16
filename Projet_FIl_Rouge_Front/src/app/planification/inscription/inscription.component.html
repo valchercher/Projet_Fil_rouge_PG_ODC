@@ -1,0 +1,46 @@
+<div  class="d-flex flex-column sticky-top container-fluid shadow bg-white mb-3">
+    <app-navbar class=""></app-navbar>
+</div>
+<div class="container">
+    <div class="card-title d-flex justify-content-center text-underline mt-5">
+        <h1>Inscription</h1>
+    </div>
+    <div class="card-header container">
+        <form action="" [formGroup]="inscription">
+            <div class="d-flex justify-content-around">
+                <div class="">
+                    <button (click)="inscrireEtudiant()" class="btn btn-primary">Inscription</button>
+                </div>
+                <div class="mb-3 mt-2">
+                    <label for="inscription"></label>
+                    <input (change)="onchangeExcel($event)" type="file" name="" id="inscription">
+                </div>
+            </div>
+        </form>
+        <div class="mt-3">
+           <table class="table table-border">
+                <thead>
+                    <tr>
+                        <th>prenom</th>
+                        <th>nom</th>
+                        <th>email</th>
+                        <th>date naissance</th>
+                        <th>password</th>
+                        <th>classe</th>
+                    </tr>
+                </thead>
+                <tbody *ngFor="let tabs of tableaux">
+                    <tr >
+                        <td>{{tabs[0]}}</td>
+                        <td>{{tabs[1]}}</td>
+                        <td>{{tabs[2]}}</td>
+                        <td>{{tabs[3]}}</td>
+                        <td>{{tabs[5]}}</td>
+                        <td>dew</td>
+                    </tr>
+                </tbody>
+           </table>
+        </div>
+    </div>
+    
+</div>

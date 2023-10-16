@@ -1,0 +1,15 @@
+.login{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 600px;
+   margin-top: 300px;
+
+}
+.login >div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    flex: 1;
+}
